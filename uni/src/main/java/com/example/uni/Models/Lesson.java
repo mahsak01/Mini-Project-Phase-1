@@ -31,7 +31,11 @@ public class Lesson {
     @Min(1)
     private int unit;
 
-    @ManyToMany
+    @ManyToOne
+    @JoinColumn
+    private College college;
+
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(
             name = "lesson_professor",
             joinColumns = @JoinColumn(name = "lesson_id"),
@@ -40,15 +44,36 @@ public class Lesson {
     @JsonIgnore
     private Set<Professor> professors ;
 
-    @OneToMany(mappedBy = "lesson")
+    @OneToMany(mappedBy = "lesson",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<StudentLesson> studentLessons ;
 
+
+    public Lesson(String lessonName, int unit) {
+        this.lessonName = lessonName;
+        this.unit = unit;
+    }
 
     public Lesson() {
 
     }
 
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Set<StudentLesson> getStudentLessons() {
+        return studentLessons;
+    }
+
+    public void setStudentLessons(Set<StudentLesson> studentLessons) {
+        this.studentLessons = studentLessons;
+    }
 
     public Long getId() {
         return id;

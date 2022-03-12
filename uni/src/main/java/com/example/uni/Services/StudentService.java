@@ -25,8 +25,11 @@ public class StudentService {
      * @return student
      */
     public Student addStudent(Student student,Long id)throws Exception{
-        if (searchByNationalCode(student.getNationalCode())!=null ||searchByPersonnelNumber(student.getPersonnelNumber())!=null)
+        if (searchByNationalCode(student.getNationalCode())!=null )
             throw new Exception("The student With This national code Exist");
+        else if (searchByPersonnelNumber(student.getPersonnelNumber())!=null)
+            throw new Exception("The student With This Personnel Number  Exist");
+
         studentRepository.save(student);
         return collegeService.addStundet(student,id);
     }
@@ -51,12 +54,14 @@ public class StudentService {
      * @param id input data
      * @return student
      */
-    public Student deleteStudent (Long id) throws Exception{
+    public void deleteStudent (Long id) throws Exception{
 
         Student student= getStudent(id);
+
         collegeService.deleteStundet(student,student.getCollege().getId());
-        studentRepository.delete(student);
-        return student;
+
+        studentRepository.deleteById(id);
+
     }
 
     /**
@@ -104,15 +109,57 @@ public class StudentService {
 
     /**
      * function for get all lesson of college
-     * @param id
-     * @return
-     * @throws Exception
+     * @param id of student
+     * @return  all lesson
      */
     public Set<StudentLesson> getAllStudentLesson(Long id)throws Exception{
 
         return getStudent(id).getStudentLessons();
     }
 
+    /**
+     * function for add lesson of student
+     * @param studentLesson input data
+     * @param id of student
+     */
+    public void addLesson(StudentLesson studentLesson,Long id)throws Exception{
+        Student student = getStudent(id);
+        student.getStudentLessons().add(studentLesson);
+        studentLesson.setStudent(student);
+        studentRepository.save(student);
 
+    }
+
+    /**
+     * function for delete lesson of student
+     * @param studentLesson input data
+     * @param id of student
+     */
+    public void deleteLesson(StudentLesson studentLesson,Long id)throws Exception{
+        Student student = getStudent(id);
+        student.getStudentLessons().remove(studentLesson);
+        studentLesson.setStudent(null);
+        studentRepository.save(student);
+
+    }
+
+
+    /**
+     * function for get avg of student
+     * @param id of student
+     * @return avg
+     */
+    public float getAvg(Long id)throws Exception{
+        final float[] avg = {0};
+        final int[] unit = { 0 };
+
+        getAllStudentLesson(id).forEach((temp)->{
+            avg[0] = temp.getGrade() * temp.getLesson().getUnit();
+            unit[0] = temp.getLesson().getUnit();
+        });
+
+        avg[0]/=unit[0];
+        return avg[0];
+    }
 
 }

@@ -2,6 +2,7 @@ package com.example.uni.Models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
@@ -24,29 +25,48 @@ public class Professor {
     )
     private Long id;
 
-    @NotNull
-    @Column(unique = true)
-    private Long personnelNumber;
+    @NotEmpty(message = "Please fill personnel Number")
+    private String personnelNumber;
 
-    @NotNull
-    @Size(min=3, max=255)
+    @NotEmpty(message = "Please fill firstname")
+    @Size(min = 3, max = 255, message = "Please Enter firstname  between 3-255 character")
     private String firstname;
 
-    @NotNull
-    @Size(min=3, max=255)
+    @NotEmpty(message = "Please fill lastname")
+    @Size(min = 3, max = 255, message = "Please Enter lastname between 3-255 character")
     private String lastname;
 
-    @NotNull
-    @Column(unique = true)
-    @Size(min=10, max=10)
+    @NotEmpty(message = "Please fill national Code")
+    @Size(min = 10, max = 10, message = "Please Enter national Code name 10 character")
     private String nationalCode;
 
-    @ManyToMany(mappedBy = "professors")
+    @ManyToMany(mappedBy = "professors",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Lesson> lessons ;
 
+    @ManyToOne
+    @JoinColumn
+    private College college;
+
+
     public Professor() {
 
+    }
+
+    public Professor(String personnelNumber, String firstname, String lastname, String nationalCode) {
+        this.personnelNumber = personnelNumber;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.nationalCode = nationalCode;
+    }
+
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
     }
 
     public Long getId() {
@@ -57,11 +77,11 @@ public class Professor {
         this.id = id;
     }
 
-    public Long getPersonnelNumber() {
+    public String getPersonnelNumber() {
         return personnelNumber;
     }
 
-    public void setPersonnelNumber(Long personnelNumber) {
+    public void setPersonnelNumber(String personnelNumber) {
         this.personnelNumber = personnelNumber;
     }
 

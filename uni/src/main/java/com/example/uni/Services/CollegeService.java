@@ -21,47 +21,39 @@ public class CollegeService {
 
     /**
      * function for add new college
-     *
      * @param college input data
-     * @return college
      */
-    public College addCollege(College college) throws Exception {
+    public void addCollege(College college) throws Exception {
         if (searchByCollegeName(college.getCollegeName()) != null)
             throw new Exception("The college With This name Exist");
-        return collegeRepository.save(college);
+        collegeRepository.save(college);
     }
 
     /**
      * function for update college
-     *
      * @param college input data
      * @param id      of college
-     * @return college
      */
-    public College updateCollege(College college, Long id) throws Exception {
+    public void updateCollege(College college, Long id) throws Exception {
         college.setId(id);
-        return addCollege(college);
+        addCollege(college);
     }
 
 
     /**
      * function for delete college
-     *
      * @param id input data
-     * @return college
      */
-    public College deleteCollege(Long id) throws Exception {
+    public void deleteCollege(Long id) throws Exception {
 
         College college = getCollege(id);
 
         collegeRepository.delete(college);
 
-        return college;
     }
 
     /**
      * function for search college with name
-     *
      * @param collegeName input data
      * @return college
      */
@@ -72,7 +64,6 @@ public class CollegeService {
 
     /**
      * function for get all college
-     *
      * @return all college
      */
     public List<College> getAllCollege() {
@@ -139,17 +130,69 @@ public class CollegeService {
     }
 
     /**
+     * function for add professor to college
+     * @param professor input data
+     * @param id      of college
+     * @return professor
+     */
+    public Professor addProfessor(Professor professor, Long id) throws Exception {
+        College college = getCollege(id);
+        college.getProfessors().add(professor);
+        professor.setCollege(college);
+        collegeRepository.save(college);
+        return professor;
+    }
+
+    /**
+     * function for add lesson to college
+     * @param lesson input data
+     * @param id      of college
+     * @return lesson
+     */
+    public Lesson addLesson(Lesson lesson, Long id) throws Exception {
+        College college = getCollege(id);
+        college.getLessons().add(lesson);
+        lesson.setCollege(college);
+        collegeRepository.save(college);
+        return lesson;
+    }
+
+    /**
+     * function for delete lesson to college
+     * @param lesson input data
+     * @param id      of college
+     * @return lesson
+     */
+    public Lesson deleteLesson(Lesson lesson, Long id) throws Exception {
+        College college = getCollege(id);
+        college.getLessons().remove(lesson);
+        lesson.setCollege(null);
+        collegeRepository.save(college);
+        return lesson;
+    }
+
+    /**
+     * function for delete professor to college
+     * @param professor input data
+     * @param id      of college
+     */
+    public void deleteProfessor(Professor professor, Long id) throws Exception {
+        College college = getCollege(id);
+        college.getProfessors().remove(professor);
+        professor.setCollege(null);
+        collegeRepository.save(college);
+    }
+
+    /**
      * function for delete student to college
      *
      * @param student input data
      * @param id      of college
-     * @return student
      */
-    public Student deleteStundet(Student student, Long id) throws Exception {
+    public void deleteStundet(Student student, Long id) throws Exception {
         College college = getCollege(id);
         college.getStudents().remove(student);
         student.setCollege(null);
         collegeRepository.save(college);
-        return student;
     }
 }

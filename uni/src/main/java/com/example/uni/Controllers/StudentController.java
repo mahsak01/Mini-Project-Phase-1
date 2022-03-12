@@ -3,7 +3,6 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.StudentDto;
-import com.example.uni.Models.College;
 import com.example.uni.Models.Student;
 import com.example.uni.Services.StudentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +25,7 @@ public class StudentController {
      * @return student
      */
     @PostMapping
-    public ResponseEntity<Object> addCollege(@Valid @RequestBody StudentDto studentDto){
+    public ResponseEntity<Object> addStudent(@Valid @RequestBody StudentDto studentDto){
 
         ResponseModels responseModels = new ResponseModels();
         try {
@@ -52,7 +51,7 @@ public class StudentController {
      * @return student
      */
     @PutMapping("/{id}")
-    public ResponseEntity<Object> updateCollege(@PathVariable("id") Long id,@Valid @RequestBody StudentDto studentDto){
+    public ResponseEntity<Object> updateStudent(@PathVariable("id") Long id,@Valid @RequestBody StudentDto studentDto){
 
         ResponseModels responseModels = new ResponseModels();
         try {
@@ -80,7 +79,7 @@ public class StudentController {
     public ResponseEntity<Object> deleteStudent(@PathVariable("id") Long id){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(studentService.deleteStudent(id));
+            studentService.deleteStudent(id);
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("student successfully delete");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -91,6 +90,60 @@ public class StudentController {
         }
 
     }
+    /**
+     * function for get all student
+     * @return all student
+     */
+    @GetMapping
+    public ResponseEntity< Object> getAllStudent() {
+        ResponseModels responseModels = new ResponseModels();
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("get All student successfully ");
+        responseModels.setData(studentService.getAllStudent());
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
+    }
 
+
+    /**
+     * function for get a student
+     * @param id of student
+     * @return a student
+     */
+    @GetMapping(path = "/{id}")
+    public ResponseEntity< Object> getStudent(@PathVariable("id") Long id) {
+
+        ResponseModels responseModels = new ResponseModels();
+        try {
+            responseModels.setData(studentService.getStudent(id));
+            responseModels.setStatus(Status.SUCCESS);
+            responseModels.setMessage("get student successfully");
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
+        } catch (Exception e) {
+            responseModels.setStatus(Status.FAILED);
+            responseModels.setMessage("Error "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
+        }
+    }
+
+
+    /**
+     * function for get all lesson of Student
+     * @param id of student
+     * @return all lesson of Student
+     */
+    @GetMapping("/{id}/lessons")
+    public ResponseEntity<Object> getStudentLesson(@PathVariable("id") Long id){
+        ResponseModels responseModels = new ResponseModels();
+        try {
+            responseModels.setData(studentService.getAllStudentLesson(id));
+            responseModels.setStatus(Status.SUCCESS);
+            responseModels.setMessage("get student lessons successfully");
+            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
+        } catch (Exception e) {
+            responseModels.setStatus(Status.FAILED);
+            responseModels.setMessage("Error "+e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
+        }
+    }
 
 }

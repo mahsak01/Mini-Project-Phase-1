@@ -80,7 +80,7 @@ public class CollegeController {
     public ResponseEntity<Object> deleteCollege(@PathVariable("id") Long id){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(collegeService.deleteCollege(id));
+            collegeService.deleteCollege(id);
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("college successfully delete");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

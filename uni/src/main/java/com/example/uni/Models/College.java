@@ -29,7 +29,7 @@ public class College {
     @Size(min = 4 , max = 20 , message = "Please Enter college name between 4-20 character")
     private String collegeName;
 
-    @OneToMany
+    @OneToMany(mappedBy = "college", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Professor> professors= new HashSet<>();
 
@@ -37,7 +37,7 @@ public class College {
     @JsonIgnore
     private Set<Student> students= new HashSet<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "college", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Lesson> lessons= new HashSet<>();
 

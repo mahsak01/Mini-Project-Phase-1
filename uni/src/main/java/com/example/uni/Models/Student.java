@@ -42,7 +42,7 @@ public class Student {
     @OneToMany(mappedBy = "student")
     private Set<StudentLesson> studentLessons;
 
-    @ManyToOne
+    @ManyToOne(targetEntity = College.class)
     @JoinColumn
     private College college;
 

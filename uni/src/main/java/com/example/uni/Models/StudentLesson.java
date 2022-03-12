@@ -25,25 +25,36 @@ public class StudentLesson {
     )
     private Long id;
 
-    @NotNull
-    @Size(min = 0 , max = 20)
-    private float grade;
 
-    @NotNull
-    @Min(0)
+    @Size(min = 0 , max = 20 ,message = "grade between 0 - 20 ")
+    private float grade=0;
+
+    @NotNull(message = "Please fill term")
+    @Min(value = 1 , message = "term start 1")
     private int term;
+
 
     @ManyToOne
     @JoinColumn()
-    @JsonIgnore
     private Lesson lesson;
 
     @ManyToOne
     @JoinColumn()
-    @JsonIgnore
+    private Professor professor;
+
+    @ManyToOne
+    @JoinColumn()
     private Student student;
 
     public StudentLesson() {
+    }
+
+    public Professor getProfessor() {
+        return professor;
+    }
+
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
     }
 
     public Long getId() {

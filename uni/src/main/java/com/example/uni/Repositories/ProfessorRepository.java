@@ -4,4 +4,9 @@ import com.example.uni.Models.Professor;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface  ProfessorRepository extends JpaRepository<Professor , Long> {
+
+    Professor findByNationalCode(String nationalCode);
+
+    Professor findByPersonnelNumber(String personnelNumber);
+
 }
