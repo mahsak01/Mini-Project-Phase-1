@@ -35,6 +35,8 @@ public class CollegeService {
      * @param id      of college
      */
     public void updateCollege(College college, Long id) throws Exception {
+        if (getCollege(id)==null)
+            throw new Exception("The college With This id not Exist");
         college.setId(id);
         addCollege(college);
     }
@@ -72,11 +74,10 @@ public class CollegeService {
 
     /**
      * function for get college with id
-     *
      * @param id input data
      * @return college
      */
-    public College getCollege(Long id) throws Exception {
+    public College  getCollege(Long id) throws Exception {
         Optional<College> college = collegeRepository.findById(id);
         if (college.isEmpty())
             throw new Exception("The college With This id not Exist");
@@ -86,7 +87,6 @@ public class CollegeService {
 
     /**
      * function for get all lesson of college
-     *
      * @param id of college
      * @return all lesson
      */
@@ -96,7 +96,6 @@ public class CollegeService {
 
     /**
      * function for get all Professor of college
-     *
      * @param id of college
      * @return all Professor
      */
@@ -106,93 +105,10 @@ public class CollegeService {
 
     /**
      * function for get all student of college
-     *
      * @param id of college
      * @return all student
      */
     public Set<Student> getAllStudentOfCollege(Long id) throws Exception {
         return getCollege(id).getStudents();
-    }
-
-    /**
-     * function for add student to college
-     *
-     * @param student input data
-     * @param id      of college
-     * @return student
-     */
-    public Student addStundet(Student student, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getStudents().add(student);
-        student.setCollege(college);
-        collegeRepository.save(college);
-        return student;
-    }
-
-    /**
-     * function for add professor to college
-     * @param professor input data
-     * @param id      of college
-     * @return professor
-     */
-    public Professor addProfessor(Professor professor, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getProfessors().add(professor);
-        professor.setCollege(college);
-        collegeRepository.save(college);
-        return professor;
-    }
-
-    /**
-     * function for add lesson to college
-     * @param lesson input data
-     * @param id      of college
-     * @return lesson
-     */
-    public Lesson addLesson(Lesson lesson, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getLessons().add(lesson);
-        lesson.setCollege(college);
-        collegeRepository.save(college);
-        return lesson;
-    }
-
-    /**
-     * function for delete lesson to college
-     * @param lesson input data
-     * @param id      of college
-     * @return lesson
-     */
-    public Lesson deleteLesson(Lesson lesson, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getLessons().remove(lesson);
-        lesson.setCollege(null);
-        collegeRepository.save(college);
-        return lesson;
-    }
-
-    /**
-     * function for delete professor to college
-     * @param professor input data
-     * @param id      of college
-     */
-    public void deleteProfessor(Professor professor, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getProfessors().remove(professor);
-        professor.setCollege(null);
-        collegeRepository.save(college);
-    }
-
-    /**
-     * function for delete student to college
-     *
-     * @param student input data
-     * @param id      of college
-     */
-    public void deleteStundet(Student student, Long id) throws Exception {
-        College college = getCollege(id);
-        college.getStudents().remove(student);
-        student.setCollege(null);
-        collegeRepository.save(college);
     }
 }

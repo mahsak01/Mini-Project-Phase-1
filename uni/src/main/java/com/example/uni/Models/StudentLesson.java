@@ -1,12 +1,10 @@
 package com.example.uni.Models;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import javax.persistence.*;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
-import java.util.Set;
 
 
 @Entity
@@ -26,7 +24,8 @@ public class StudentLesson {
     private Long id;
 
 
-    @Size(min = 0 , max = 20 ,message = "grade between 0 - 20 ")
+    @Min(value = 0 , message = "grade between 0 - 20 ")
+    @Max(value = 20 ,message = "grade between 0 - 20 ")
     private float grade=0;
 
     @NotNull(message = "Please fill term")
@@ -47,6 +46,14 @@ public class StudentLesson {
     private Student student;
 
     public StudentLesson() {
+    }
+
+    public StudentLesson(float grade, int term, Lesson lesson, Professor professor, Student student) {
+        this.grade = grade;
+        this.term = term;
+        this.lesson = lesson;
+        this.professor = professor;
+        this.student = student;
     }
 
     public Professor getProfessor() {

@@ -3,7 +3,6 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.ProfessorDto;
-import com.example.uni.Models.Professor;
 import com.example.uni.Services.ProfessorService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -31,10 +30,7 @@ public class ProfessorController {
 
         ResponseModels responseModels = new ResponseModels();
         try {
-            Professor professor= new Professor(professorDto.getPersonnelNumber(),
-                    professorDto.getFirstname(),professorDto.getLastname(),
-                    professorDto.getNationalCode());
-            responseModels.setData( professorService.addProfessor(professor,professorDto.getCollegeId()));
+            responseModels.setData( professorService.addProfessor(professorDto));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("professor successfully create");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -48,19 +44,17 @@ public class ProfessorController {
 
     /**
      * function for update professor
-     * @param id of professor
+     * @param professorId of professor
      * @param professorDto input data
      * @return professor
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateProfessor(@PathVariable("id") Long id,@Valid @RequestBody ProfessorDto professorDto){
+    @PutMapping("/{professorId}")
+    public ResponseEntity<Object> updateProfessor(@PathVariable("professorId") Long professorId,@Valid @RequestBody ProfessorDto professorDto){
 
         ResponseModels responseModels = new ResponseModels();
         try {
-            Professor professor= new Professor(professorDto.getPersonnelNumber(),
-                    professorDto.getFirstname(),professorDto.getLastname(),
-                    professorDto.getNationalCode());
-            responseModels.setData( professorService.updateProfsser(professor,id,professorDto.getCollegeId()));
+
+            responseModels.setData( professorService.updateProfsser(professorDto,professorId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("professor successfully update");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -75,14 +69,14 @@ public class ProfessorController {
 
     /**
      * function for delete professor
-     * @param id of college
+     * @param professorId of college
      * @return college
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteProfessor(@PathVariable("id") Long id){
+    @DeleteMapping("/{professorId}")
+    public ResponseEntity<Object> deleteProfessor(@PathVariable("professorId") Long professorId){
         ResponseModels responseModels = new ResponseModels();
         try {
-            professorService.deleteProfsser(id);
+            professorService.deleteProfsser(professorId);
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("professor successfully delete");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -110,15 +104,15 @@ public class ProfessorController {
 
     /**
      * function for get a professor
-     * @param id of professor
+     * @param professorId of professor
      * @return a professor
      */
-    @GetMapping(path = "/{id}")
-    public ResponseEntity< Object> getProfessor(@PathVariable("id") Long id) {
+    @GetMapping(path = "/{professorId}")
+    public ResponseEntity< Object> getProfessor(@PathVariable("professorId") Long professorId) {
 
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(professorService.getProfessor(id));
+            responseModels.setData(professorService.getProfessor(professorId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get professor successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -134,14 +128,14 @@ public class ProfessorController {
 
     /**
      * function for get all lesson of professor
-     * @param id of professor
+     * @param professorId of professor
      * @return all lesson of professor
      */
-    @GetMapping("/{id}/lessons")
-    public ResponseEntity<Object> getLessons(@PathVariable("id") Long id){
+    @GetMapping("/{professorId}/lessons")
+    public ResponseEntity<Object> getLessons(@PathVariable("professorId") Long professorId){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(professorService.getAllLesson(id));
+            responseModels.setData(professorService.getAllLesson(professorId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get professor lessons successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -154,16 +148,16 @@ public class ProfessorController {
 
     /**
      * function for get all lesson of professor
-     * @param id of professor
+     * @param professorId of professor
      * @return all lesson of professor
      */
-    @GetMapping("/{id}/students")
-    public ResponseEntity<Object> getStudents(@PathVariable("id") Long id){
+    @GetMapping("/{professorId}/students")
+    public ResponseEntity<Object> getStudents(@PathVariable("professorId") Long professorId){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(professorService.getAllStudent(id));
+            responseModels.setData(professorService.getAllStudent(professorId));
             responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("get professor lessons successfully");
+            responseModels.setMessage("get professor students successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
         } catch (Exception e) {
             responseModels.setStatus(Status.FAILED);
@@ -179,8 +173,8 @@ public class ProfessorController {
      * @param professorId of professor
      * @return all lesson of professor
      */
-    @GetMapping("/{professorId}/addLesson")
-    public ResponseEntity<Object> addLesson(@PathVariable("professorId") Long professorId ,@RequestBody String json){
+    @PostMapping(value = "/{professorId}/lesson")
+    public ResponseEntity<Object> addLesson(@PathVariable("professorId") Long professorId ,@Valid @RequestBody String json){
 
         ResponseModels responseModels = new ResponseModels();
         try {
@@ -202,7 +196,7 @@ public class ProfessorController {
      * @param professorId of professor
      * @return all lesson of professor
      */
-    @GetMapping("/{professorId}/deleteLesson")
+    @DeleteMapping("/{professorId}/lesson")
     public ResponseEntity<Object> deleteLesson(@PathVariable("professorId") Long professorId, @RequestBody String json){
         ResponseModels responseModels = new ResponseModels();
         try {
@@ -218,4 +212,7 @@ public class ProfessorController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
         }
     }
+
+
+
 }

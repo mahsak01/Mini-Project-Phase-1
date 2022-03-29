@@ -35,7 +35,7 @@ public class Lesson {
     @JoinColumn
     private College college;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany
     @JoinTable(
             name = "lesson_professor",
             joinColumns = @JoinColumn(name = "lesson_id"),
@@ -71,8 +71,12 @@ public class Lesson {
         return studentLessons;
     }
 
-    public void setStudentLessons(Set<StudentLesson> studentLessons) {
-        this.studentLessons = studentLessons;
+    public void addStudentLesson(StudentLesson studentLesson) {
+        studentLessons.add(studentLesson);
+    }
+
+    public void deleteStudentLesson(StudentLesson studentLesson) {
+        studentLessons.remove(studentLesson);
     }
 
     public Long getId() {
@@ -103,10 +107,14 @@ public class Lesson {
         return professors;
     }
 
-    public void setProfessors(Set<Professor> professors) {
-        this.professors = professors;
+    public void addProfessor(Professor professor) {
+        professors.add(professor);
+    }
+    public void deleteProfessor(Professor professor) {
+        professors.remove(professor);
     }
 
+ 
     @Override
     public String toString() {
         return "Lesson{" +

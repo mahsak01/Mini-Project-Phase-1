@@ -40,9 +40,10 @@ public class Student {
     private String nationalCode;
 
     @OneToMany(mappedBy = "student")
+    @JsonIgnore
     private Set<StudentLesson> studentLessons;
 
-    @ManyToOne(targetEntity = College.class)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private College college;
 
@@ -100,10 +101,13 @@ public class Student {
         return studentLessons;
     }
 
-    public void setStudentLessons(Set<StudentLesson> studentLessons) {
-        this.studentLessons = studentLessons;
+    public void addStudentLesson(StudentLesson studentLesson) {
+        studentLessons.add(studentLesson);
     }
 
+    public void deleteStudentLesson(StudentLesson studentLesson) {
+        studentLessons.remove(studentLesson);
+    }
     public College getCollege() {
         return college;
     }

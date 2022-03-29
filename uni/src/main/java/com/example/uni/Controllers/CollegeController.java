@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
 
 
 @RestController
@@ -49,15 +47,15 @@ public class CollegeController {
 
     /**
      * function for update college
-     * @param id of college
+     * @param collegeId of college
      * @param college input data
      * @return college
      */
-    @PutMapping("/{id}")
-    public ResponseEntity<Object> updateCollege(@PathVariable("id") Long id,@Valid @RequestBody  College college ){
+    @PutMapping("/{collegeId}")
+    public ResponseEntity<Object> updateCollege(@PathVariable("collegeId") Long collegeId,@Valid @RequestBody  College college ){
         ResponseModels responseModels = new ResponseModels();
         try {
-            collegeService.updateCollege(college,id);
+            collegeService.updateCollege(college,collegeId);
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("college successfully update");
             responseModels.setData(college);
@@ -73,14 +71,14 @@ public class CollegeController {
 
     /**
      * function for delete college
-     * @param id of college
+     * @param collegeId of college
      * @return college
      */
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> deleteCollege(@PathVariable("id") Long id){
+    @DeleteMapping("/{collegeId}")
+    public ResponseEntity<Object> deleteCollege(@PathVariable("collegeId") Long collegeId){
         ResponseModels responseModels = new ResponseModels();
         try {
-            collegeService.deleteCollege(id);
+            collegeService.deleteCollege(collegeId);
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("college successfully delete");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -109,15 +107,15 @@ public class CollegeController {
 
     /**
      * function for get a uni
-     * @param id of uni
+     * @param collegeId of uni
      * @return a uni
      */
-    @GetMapping(path = "/{id}")
-    public ResponseEntity< Object> getCollege(@PathVariable("id") Long id) {
+    @GetMapping(path = "/{collegeId}")
+    public ResponseEntity< Object> getCollege(@PathVariable("collegeId") Long collegeId) {
 
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(collegeService.getCollege(id));
+            responseModels.setData(collegeService.getCollege(collegeId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get college successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -131,15 +129,15 @@ public class CollegeController {
 
     /**
      * function for get all lesson
-     * @param id od college
+     * @param collegeId of college
      * @return all lesson
      */
 
-    @GetMapping(path = "/{id}/lessons")
-    public ResponseEntity<Object> getAllLesson(@PathVariable("id") Long id , @Autowired LinkedHashMap<String ,Object > map) {
+    @GetMapping(path = "/{collegeId}/lessons")
+    public ResponseEntity<Object> getAllLesson(@PathVariable("collegeId") Long collegeId , @Autowired LinkedHashMap<String ,Object > map) {
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(collegeService.getAllLessonOfCollege(id));
+            responseModels.setData(collegeService.getAllLessonOfCollege(collegeId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get All Lesson of college successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -152,15 +150,15 @@ public class CollegeController {
 
     /**
      * function for get all professor
-     * @param id od college
+     * @param collegeId od college
      * @return all professor
      */
 
-    @GetMapping(path = "/{id}/professors")
-    public ResponseEntity<Object> getAllProfessor(@PathVariable("id") Long id , @Autowired LinkedHashMap<String ,Object > map){
+    @GetMapping(path = "/{collegeId}/professors")
+    public ResponseEntity<Object> getAllProfessor(@PathVariable("collegeId") Long collegeId , @Autowired LinkedHashMap<String ,Object > map){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(collegeService.getAllProfessorOfCollege(id));
+            responseModels.setData(collegeService.getAllProfessorOfCollege(collegeId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get All Professor of college successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -173,15 +171,15 @@ public class CollegeController {
 
     /**
      * function for get all student
-     * @param id od college
+     * @param collegeId od college
      * @return all student
      */
 
-    @GetMapping(path = "/{id}/students")
-    public ResponseEntity<Object> getAllStudent(@PathVariable("id") Long id , @Autowired LinkedHashMap<String ,Object > map){
+    @GetMapping(path = "/{collegeId}/students")
+    public ResponseEntity<Object> getAllStudent(@PathVariable("collegeId") Long collegeId , @Autowired LinkedHashMap<String ,Object > map){
         ResponseModels responseModels = new ResponseModels();
         try {
-            responseModels.setData(collegeService.getAllStudentOfCollege(id));
+            responseModels.setData(collegeService.getAllStudentOfCollege(collegeId));
             responseModels.setStatus(Status.SUCCESS);
             responseModels.setMessage("get All Student of college successfully");
             return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

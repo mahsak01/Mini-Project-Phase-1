@@ -44,7 +44,7 @@ public class Professor {
     @JsonIgnore
     private Set<Lesson> lessons ;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn
     private College college;
 
@@ -113,8 +113,12 @@ public class Professor {
         return lessons;
     }
 
-    public void setLessons(Set<Lesson> lessons) {
-        this.lessons = lessons;
+    public void addLesson(Lesson lesson) {
+        lessons.add(lesson);
+    }
+
+    public void deleteLesson(Lesson lesson) {
+        lessons.remove(lesson);
     }
 
     @Override
