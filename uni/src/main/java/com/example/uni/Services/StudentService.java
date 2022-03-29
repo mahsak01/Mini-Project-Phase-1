@@ -1,11 +1,13 @@
 package com.example.uni.Services;
+import com.example.uni.Dto.LessonDto;
+import com.example.uni.Dto.StudentDto;
+import com.example.uni.Dto.StudentLessonDto;
+import com.example.uni.Models.Lesson;
 import com.example.uni.Models.Student;
 import com.example.uni.Models.StudentLesson;
 import com.example.uni.Repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.Id;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -19,33 +21,59 @@ public class StudentService {
     @Autowired
     private CollegeService collegeService;
 
+
     /**
      * function for add new student
-     * @param student input data
+     * @param studentDto input data
      * @return student
      */
-    public Student addStudent(Student student,Long id)throws Exception{
-        if (searchByNationalCode(student.getNationalCode())!=null )
+    public Student addStudent(StudentDto studentDto)throws Exception{
+
+        if (searchByNationalCode(studentDto.getNationalCode())!=null )
             throw new Exception("The student With This national code Exist");
-        else if (searchByPersonnelNumber(student.getPersonnelNumber())!=null)
+        else if (searchByPersonnelNumber(studentDto.getPersonnelNumber())!=null)
             throw new Exception("The student With This Personnel Number  Exist");
 
+        Student student= new Student(studentDto.getPersonnelNumber(),
+                studentDto.getFirstname(),studentDto.getLastname(),
+                studentDto.getNationalCode());
+
+
+        collegeService.getCollege(studentDto.getCollegeId()).addStudent(student);
         studentRepository.save(student);
-        return collegeService.addStundet(student,id);
+
+        return student;
     }
 
     /**
      * function for update student
-     * @param student input data
+     * @param studentDto input data
      * @param studentId      of student
-     * @param collegeId      of college
      * @return student
      */
-    public Student updateStudent(Student student , Long studentId , Long collegeId)throws Exception{
+    public Student updateStudent(StudentDto studentDto , Long studentId )throws Exception {
+
+        //todo
+        Student student = getStudent(studentId);
+
+        if (searchByNationalCode(studentDto.getNationalCode())!=null)
+            if (!searchByNationalCode(studentDto.getNationalCode()).getId().equals(studentId))
+                 throw new Exception("The student With This national code Exist");
+        if (searchByPersonnelNumber(studentDto.getPersonnelNumber())!=null)
+            if (!searchByPersonnelNumber(studentDto.getNationalCode()).getId().equals(studentId))
+                throw new Exception("The student With This Personnel Number  Exist");
+
+        student.getCollege().deleteStudent(student);
+
+        student = new Student(studentDto.getPersonnelNumber(),
+                studentDto.getFirstname(), studentDto.getLastname(),
+                studentDto.getNationalCode());
         student.setId(studentId);
-        collegeService.deleteStundet(student,getStudent(studentId).getCollege().getId());
+
+        collegeService.getCollege(studentDto.getCollegeId()).addStudent(student);
         studentRepository.save(student);
-        return collegeService.addStundet(student,collegeId);
+
+        return student;
     }
 
 
@@ -58,7 +86,7 @@ public class StudentService {
 
         Student student= getStudent(id);
 
-        collegeService.deleteStundet(student,student.getCollege().getId());
+        student.getCollege().deleteStudent(student);
 
         studentRepository.deleteById(id);
 
@@ -118,47 +146,21 @@ public class StudentService {
     }
 
     /**
-     * function for add lesson of student
-     * @param studentLesson input data
-     * @param id of student
-     */
-    public void addLesson(StudentLesson studentLesson,Long id)throws Exception{
-        Student student = getStudent(id);
-        student.getStudentLessons().add(studentLesson);
-        studentLesson.setStudent(student);
-        studentRepository.save(student);
-
-    }
-
-    /**
-     * function for delete lesson of student
-     * @param studentLesson input data
-     * @param id of student
-     */
-    public void deleteLesson(StudentLesson studentLesson,Long id)throws Exception{
-        Student student = getStudent(id);
-        student.getStudentLessons().remove(studentLesson);
-        studentLesson.setStudent(null);
-        studentRepository.save(student);
-
-    }
-
-
-    /**
      * function for get avg of student
      * @param id of student
      * @return avg
      */
     public float getAvg(Long id)throws Exception{
         final float[] avg = {0};
-        final int[] unit = { 0 };
+        final int[] unit = {0};
 
         getAllStudentLesson(id).forEach((temp)->{
             avg[0] = temp.getGrade() * temp.getLesson().getUnit();
             unit[0] = temp.getLesson().getUnit();
         });
 
-        avg[0]/=unit[0];
+        if (unit[0]!=0)
+            avg[0]/=unit[0];
         return avg[0];
     }
 

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
@@ -41,6 +40,7 @@ public class College {
     @JsonIgnore
     private Set<Lesson> lessons= new HashSet<>();
 
+
     public College() {
     }
 
@@ -64,24 +64,43 @@ public class College {
         return professors;
     }
 
-    public void setProfessors(Set<Professor> professors) {
-        this.professors = professors;
+    public void addProfessor(Professor professor) {
+        professor.setCollege(this);
+        professors.add(professor);
+    }
+
+    public void deleteProfessor(Professor professor) {
+        professor.setCollege(null);
+        professors.remove(professor);
     }
 
     public Set<Student> getStudents() {
         return students;
     }
 
-    public void setStudents(Set<Student> students) {
-        this.students = students;
+    public void addStudent(Student student) {
+
+        student.setCollege(this);
+        students.add(student);
+
+    }
+    public void deleteStudent(Student student) {
+        students.remove(student);
+        student.setCollege(null);
     }
 
     public Set<Lesson> getLessons() {
         return lessons;
     }
 
-    public void setLessons(Set<Lesson> lessons) {
-        this.lessons = lessons;
+    public void addLesson(Lesson lesson) {
+        lesson.setCollege(this);
+        lessons.add(lesson);
+    }
+
+    public void deleteLesson(Lesson lesson) {
+        lesson.setCollege(this);
+        lessons.add(lesson);
     }
 
     @Override
