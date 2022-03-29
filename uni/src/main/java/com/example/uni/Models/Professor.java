@@ -32,6 +32,7 @@ public class Professor {
     @Size(min = 3, max = 255, message = "Please Enter firstname  between 3-255 character")
     private String firstname;
 
+    
     @NotEmpty(message = "Please fill lastname")
     @Size(min = 3, max = 255, message = "Please Enter lastname between 3-255 character")
     private String lastname;
