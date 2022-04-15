@@ -2,6 +2,7 @@ package com.example.uni.Services;
 
 import com.example.uni.Dto.PersonDto;
 import com.example.uni.Models.College;
+import com.example.uni.Models.Models;
 import com.example.uni.Models.Person;
 import com.example.uni.Models.Student;
 import com.example.uni.Repositories.CollegeRepository;
@@ -56,17 +57,19 @@ public class StudentServiceTest {
 
         assertEquals("The student With This id not Exist", exception.getMessage());
     }
-
+//
 //    @Test
 //    public void addStudentNotExist() throws Exception {
 //
+//        College college = new College("math");
+//        collegeService.addCollege(college);
 //
 //        PersonDto studentDto = new PersonDto(
 //                "98237232",
 //                "mahsa2",
 //                "karimi2",
 //                "0440973730",
-//                1L
+//                (Long) Models.getField(college,"id")
 //        );
 //
 //
