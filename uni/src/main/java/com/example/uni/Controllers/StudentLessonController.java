@@ -22,22 +22,17 @@ public class StudentLessonController {
 
     /**
      * function for add lesson of Student
+     *
      * @param studentLessonDto input data
      * @return student lesson
      */
-    @PostMapping("student/lesson")
-    public ResponseEntity<Object> addLesson(@Valid @RequestBody StudentLessonDto studentLessonDto) {
+    @PostMapping("students/lesson")
+    public ResponseEntity<Object> addLesson(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            responseModels.setData(studentLessonService.addStudentLesson(studentLessonDto));
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("add lesson of student successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        responseModels.setData(studentLessonService.addStudentLesson(studentLessonDto));
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("add lesson of student successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
     /**
@@ -46,64 +41,46 @@ public class StudentLessonController {
      * @param studentLessonDto of student
      * @return
      */
-    @DeleteMapping("student/lesson")
-    public ResponseEntity<Object> deleteLesson( @Valid @RequestBody StudentLessonDto studentLessonDto) {
+    @DeleteMapping("students/lesson")
+    public ResponseEntity<Object> deleteLesson(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            studentLessonService.deleteStudentLesson(studentLessonDto);
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("delete lesson of student successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        studentLessonService.deleteStudentLesson(studentLessonDto);
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("delete lesson of student successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
 
     /**
      * function for delete lesson of professor
+     *
      * @param professorId of professor
      * @return all lesson of professor
      */
-    @GetMapping("professor/{professorId}/avg")
-    public ResponseEntity<Object> getAvg(@PathVariable("professorId") Long professorId){
+    @GetMapping("professors/{professorId}/avg")
+    public ResponseEntity<Object> getAvg(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("delete lesson of professor successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error "+e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("delete lesson of professor successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
-
 
 
     /**
      * function for set grade of student
+     *
      * @param studentLessonDto input data
      * @return student lesson
      */
-    @PostMapping("professor/addGrade")
-    public ResponseEntity<Object> addGrade(@Valid @RequestBody StudentLessonDto studentLessonDto){
+    @PostMapping("professors/addGrade")
+    public ResponseEntity<Object> addGrade(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            responseModels.setData(studentLessonService.setGrade(studentLessonDto));
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("change grade successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error "+e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        responseModels.setData(studentLessonService.setGrade(studentLessonDto));
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("change grade successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
-
 
 
     /**
@@ -112,19 +89,13 @@ public class StudentLessonController {
      * @param lessonId of lesson
      * @return avg of lesson
      */
-    @GetMapping("lesson/{lessonId}/avgOfLesson")
-    public ResponseEntity<Object> getAvgOfLesson(@PathVariable("lessonId") Long lessonId) {
+    @GetMapping("lessons/{lessonId}/avgOfLesson")
+    public ResponseEntity<Object> getAvgOfLesson(@PathVariable("lessonId") Long lessonId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            responseModels.setData(studentLessonService.getAvgOfLesson(lessonId));
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("get avg of lesson successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        responseModels.setData(studentLessonService.getAvgOfLesson(lessonId));
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("get avg of lesson successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
     /**
@@ -133,18 +104,12 @@ public class StudentLessonController {
      * @param professorId of professor
      * @return avg of professor
      */
-    @GetMapping("professor/{professorId}/avgOfProfessor")
-    public ResponseEntity<Object> getAvgOfProfessor(@PathVariable("professorId") Long professorId) {
+    @GetMapping("professors/{professorId}/avgOfProfessor")
+    public ResponseEntity<Object> getAvgOfProfessor(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        try {
-            responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
-            responseModels.setStatus(Status.SUCCESS);
-            responseModels.setMessage("get avg students of professor successfully");
-            return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
-        } catch (Exception e) {
-            responseModels.setStatus(Status.FAILED);
-            responseModels.setMessage("Error " + e.getMessage());
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(responseModels);
-        }
+        responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
+        responseModels.setStatus(Status.SUCCESS);
+        responseModels.setMessage("get avg students of professor successfully");
+        return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 }

@@ -59,17 +59,7 @@ public class Lesson {
     }
 
 
-    public College getCollege() {
-        return college;
-    }
 
-    public void setCollege(College college) {
-        this.college = college;
-    }
-
-    public Set<StudentLesson> getStudentLessons() {
-        return studentLessons;
-    }
 
     public void addStudentLesson(StudentLesson studentLesson) {
         studentLessons.add(studentLesson);
@@ -77,34 +67,6 @@ public class Lesson {
 
     public void deleteStudentLesson(StudentLesson studentLesson) {
         studentLessons.remove(studentLesson);
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getLessonName() {
-        return lessonName;
-    }
-
-    public void setLessonName(String lessonName) {
-        this.lessonName = lessonName;
-    }
-
-    public int getUnit() {
-        return unit;
-    }
-
-    public void setUnit(int unit) {
-        this.unit = unit;
-    }
-
-    public Set<Professor> getProfessors() {
-        return professors;
     }
 
     public void addProfessor(Professor professor) {

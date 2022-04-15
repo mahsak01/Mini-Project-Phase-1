@@ -1,11 +1,7 @@
 package com.example.uni.Services;
 
-import com.example.uni.Dto.ProfessorDto;
-import com.example.uni.Dto.StudentLessonDto;
-import com.example.uni.Models.Lesson;
-import com.example.uni.Models.Professor;
-import com.example.uni.Models.Student;
-import com.example.uni.Models.StudentLesson;
+import com.example.uni.Dto.PersonDto;
+import com.example.uni.Models.*;
 import com.example.uni.Repositories.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 public class ProfessorService {
@@ -35,17 +30,19 @@ public class ProfessorService {
      * @param professorDto input data
      * @return professor
      */
-    public Professor addProfessor(ProfessorDto professorDto) throws Exception {
-        if (searchByNationalCode(professorDto.getNationalCode()) != null)
+    public Professor addProfessor(PersonDto professorDto) throws Exception {
+
+        if (searchByNationalCode((String) Models.getField(professorDto,"nationalCode")) != null)
             throw new Exception("The professor With This national code Exist");
-        else if (searchByPersonnelNumber(professorDto.getPersonnelNumber()) != null)
+        else if (searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")) != null)
             throw new Exception("The professor With This Personnel Number  Exist");
 
-        Professor professor= new Professor(professorDto.getPersonnelNumber(),
-                professorDto.getFirstname(),professorDto.getLastname(),
-                professorDto.getNationalCode());
+        Professor professor= new Professor((String) Models.getField(professorDto,"personnelNumber"),
+                (String) Models.getField(professorDto,"firstname"),
+                (String) Models.getField(professorDto,"lastname"),
+                (String) Models.getField(professorDto,"nationalCode"));
 
-        collegeService.getCollege(professorDto.getCollegeId()).addProfessor(professor);
+        collegeService.getCollege((Long) Models.getField(professorDto,"collegeId")).addProfessor(professor);
         professorRepository.save(professor);
 
         return professor;
@@ -58,26 +55,27 @@ public class ProfessorService {
      * @param professorId of professor
      * @return professor
      */
-    public Professor updateProfsser(ProfessorDto professorDto, Long professorId) throws Exception {
+    public Professor updateProfsser(PersonDto professorDto, Long professorId) throws Exception {
 
         //todo
         Professor professor = getProfessor(professorId);
 
-        if (searchByNationalCode(professorDto.getNationalCode()) != null)
-            if (!searchByNationalCode(professorDto.getNationalCode()).getId().equals(professorId))
+        if (searchByNationalCode((String) Models.getField(professorDto,"nationalCode")) != null)
+            if (!Models.getField(searchByNationalCode((String) Models.getField(professorDto,"nationalCode")),"id").equals(professorId))
                 throw new Exception("The professor With This national code Exist");
-        if (searchByPersonnelNumber(professorDto.getPersonnelNumber()) != null)
-            if (!searchByPersonnelNumber(professorDto.getPersonnelNumber()).getId().equals(professorId))
+        if (searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")) != null)
+            if (!Models.getField(searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")),"id").equals(professorId))
                 throw new Exception("The professor With This Personnel Number  Exist");
 
-        professor.getCollege().deleteProfessor(professor);
+        ((College)Models.getField(professor,"college")).deleteProfessor(professor);
 
-        professor = new Professor(professorDto.getPersonnelNumber(),
-                professorDto.getFirstname(), professorDto.getLastname(),
-                professorDto.getNationalCode());
-        professor.setId(professorId);
+        professor = new Professor((String) Models.getField(professorDto,"personnelNumber"),
+                (String) Models.getField(professorDto,"firstname"),
+                (String) Models.getField(professorDto,"lastname"),
+                (String) Models.getField(professorDto,"nationalCode"));
+        Models.setField(professor,"id",professorId);
 
-        collegeService.getCollege(professorDto.getCollegeId()).addProfessor(professor);
+        collegeService.getCollege((Long) Models.getField(professorDto,"collegeId")).addProfessor(professor);
         professorRepository.save(professor);
 
         return professor;
@@ -93,7 +91,7 @@ public class ProfessorService {
 
         Professor professor = getProfessor(professorId);
 
-        professor.getCollege().deleteProfessor(professor);
+        ((College) Models.getField(professor,"college")).deleteProfessor(professor);
 
         professorRepository.deleteById(professorId);
 
@@ -149,7 +147,7 @@ public class ProfessorService {
      */
     public Set<Lesson> getAllLesson(Long professorId) throws Exception {
 
-        return getProfessor(professorId).getLessons();
+        return (Set<Lesson>) Models.getField(getProfessor(professorId),"lessons");
     }
 
     /**
@@ -160,9 +158,11 @@ public class ProfessorService {
      */
     public List<Student> getAllStudent(Long professorId) throws Exception {
         List<Student> students = new ArrayList<>();
-        for (Lesson lesson: getProfessor(professorId).getLessons()){
-            for (StudentLesson studentLesson : lesson.getStudentLessons())
-                students.add(studentLesson.getStudent());
+        for (Lesson lesson: (Set<Lesson>) Models.getField(getProfessor(professorId),"lessons")){
+            for (StudentLesson studentLesson : (Set<StudentLesson>) Models.getField(lesson,"studentLessons"))
+                students.add((Student) Models.getField(studentLesson,"student"));
+
+
         }
         return students;
     }

@@ -1,9 +1,6 @@
 package com.example.uni.Services;
 
-import com.example.uni.Models.College;
-import com.example.uni.Models.Lesson;
-import com.example.uni.Models.Professor;
-import com.example.uni.Models.Student;
+import com.example.uni.Models.*;
 import com.example.uni.Repositories.CollegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,7 +21,7 @@ public class CollegeService {
      * @param college input data
      */
     public void addCollege(College college) throws Exception {
-        if (searchByCollegeName(college.getCollegeName()) != null)
+        if (searchByCollegeName((String) Models.getField(college,"collegeName")) != null)
             throw new Exception("The college With This name Exist");
         collegeRepository.save(college);
     }
@@ -37,7 +34,7 @@ public class CollegeService {
     public void updateCollege(College college, Long id) throws Exception {
         if (getCollege(id)==null)
             throw new Exception("The college With This id not Exist");
-        college.setId(id);
+        Models.setField(college,"id",id);
         addCollege(college);
     }
 
@@ -91,7 +88,7 @@ public class CollegeService {
      * @return all lesson
      */
     public Set<Lesson> getAllLessonOfCollege(Long id) throws Exception {
-        return getCollege(id).getLessons();
+        return (Set<Lesson>) Models.getField(getCollege(id),"lessons");
     }
 
     /**
@@ -100,7 +97,8 @@ public class CollegeService {
      * @return all Professor
      */
     public Set<Professor> getAllProfessorOfCollege(Long id) throws Exception {
-        return getCollege(id).getProfessors();
+        return (Set<Professor>) Models.getField(getCollege(id),"professors");
+
     }
 
     /**
@@ -109,6 +107,7 @@ public class CollegeService {
      * @return all student
      */
     public Set<Student> getAllStudentOfCollege(Long id) throws Exception {
-        return getCollege(id).getStudents();
+        return (Set<Student>) Models.getField(getCollege(id),"students");
+
     }
 }

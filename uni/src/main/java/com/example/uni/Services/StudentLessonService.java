@@ -1,16 +1,14 @@
 package com.example.uni.Services;
 
 import com.example.uni.Dto.StudentLessonDto;
-import com.example.uni.Models.Lesson;
-import com.example.uni.Models.Professor;
-import com.example.uni.Models.Student;
-import com.example.uni.Models.StudentLesson;
+import com.example.uni.Models.*;
 import com.example.uni.Repositories.StudentLessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class StudentLessonService {
@@ -36,13 +34,17 @@ public class StudentLessonService {
      */
     public StudentLesson addStudentLesson(StudentLessonDto studentLessonDto) throws Exception {
 
-        if (searchByLessonAndStudentAndTerm(studentLessonDto.getLessonId() ,studentLessonDto.getStudentId(),studentLessonDto.getTerm()) != null)
+
+        if (searchByLessonAndStudentAndTerm((Long) Models.getField(studentLessonDto,"lessonId")
+                ,(Long) Models.getField(studentLessonDto,"studentId"),
+                (int) Models.getField(studentLessonDto,"term")) != null)
             throw new Exception("The student took this lesson this term");
 
-        Student student = studentService.getStudent(studentLessonDto.getStudentId());
-        Lesson lesson = lessonService.getLesson(studentLessonDto.getLessonId());
-        Professor professor=professorService.getProfessor(studentLessonDto.getProfessorId());
-        StudentLesson studentLesson = new StudentLesson(studentLessonDto.getGrade() , studentLessonDto.getTerm(),
+        Student student = studentService.getStudent((Long) Models.getField(studentLessonDto,"studentId"));
+        Lesson lesson = lessonService.getLesson((Long) Models.getField(studentLessonDto,"lessonId"));
+        Professor professor=professorService.getProfessor((Long) Models.getField(studentLessonDto,"professorId"));
+        StudentLesson studentLesson = new StudentLesson((float) Models.getField(studentLessonDto,"grade") ,
+                (int) Models.getField(studentLessonDto,"term"),
                 lesson,professor,student);
         studentLessonRepository.save(studentLesson);
         lesson.addStudentLesson(studentLesson);
@@ -61,18 +63,24 @@ public class StudentLessonService {
 
         StudentLesson studentLesson = getStudentLesson(studentLessonId);
 
-        if (searchByLessonAndStudentAndTerm(studentLessonDto.getLessonId() ,studentLessonDto.getStudentId(),studentLessonDto.getTerm()) != null)
-            if (!searchByLessonAndStudentAndTerm(studentLessonDto.getLessonId() ,studentLessonDto.getStudentId(),studentLessonDto.getTerm()).getId().equals(studentLessonId) )
+        if (searchByLessonAndStudentAndTerm((Long) Models.getField(studentLessonDto,"lessonId")
+                ,(Long) Models.getField(studentLessonDto,"studentId"),
+                (int) Models.getField(studentLessonDto,"term")) != null)
+            if (!Models.getField(searchByLessonAndStudentAndTerm((Long) Models.getField(studentLessonDto,"lessonId")
+                    ,(Long) Models.getField(studentLessonDto,"studentId"),
+                    (int) Models.getField(studentLessonDto,"term")),
+                    "id").equals(studentLessonId) )
                 throw new Exception("The student took this lesson this term");
 
-        Student student = studentService.getStudent(studentLessonDto.getStudentId());
-        Lesson lesson = lessonService.getLesson(studentLessonDto.getLessonId());
-        Professor professor=professorService.getProfessor(studentLessonDto.getProfessorId());
+        Student student = studentService.getStudent((Long) Models.getField(studentLessonDto,"studentId"));
+        Lesson lesson = lessonService.getLesson((Long) Models.getField(studentLessonDto,"lessonId"));
+        Professor professor=professorService.getProfessor((Long) Models.getField(studentLessonDto,"professorId"));
 
-        studentLesson.getStudent().deleteStudentLesson(studentLesson);
-        studentLesson.getLesson().deleteStudentLesson(studentLesson);
+        ((Student) Models.getField(studentLesson,"student")).deleteStudentLesson(studentLesson);
+        ((Lesson) Models.getField(studentLesson,"lesson")).deleteStudentLesson(studentLesson);
 
-        studentLesson = new StudentLesson(studentLessonDto.getGrade() , studentLessonDto.getTerm(),
+        studentLesson = new StudentLesson((float) Models.getField(studentLessonDto,"grade") ,
+                (int) Models.getField(studentLessonDto,"term"),
                 lesson,professor,student);
 
         studentLessonRepository.save(studentLesson);
@@ -90,11 +98,14 @@ public class StudentLessonService {
      */
     public void deleteStudentLesson(StudentLessonDto studentLessonDto) throws Exception {
 
-        StudentLesson studentLesson = searchByLessonAndStudentAndTerm(studentLessonDto.getLessonId(),
-                studentLessonDto.getStudentId(), studentLessonDto.getTerm());
-        studentLesson.getLesson().deleteStudentLesson(studentLesson);
-        studentLesson.getStudent().deleteStudentLesson(studentLesson);
-        studentLessonRepository.deleteById(studentLesson.getId());
+        StudentLesson studentLesson = searchByLessonAndStudentAndTerm((Long) Models.getField(studentLessonDto,"lessonId"),
+                (Long) Models.getField(studentLessonDto,"studentId"),
+                (int) Models.getField(studentLessonDto,"term"));
+
+        ((Lesson) Models.getField(studentLesson,"lesson")).deleteStudentLesson(studentLesson);
+        ((Student) Models.getField(studentLesson,"studnet")).deleteStudentLesson(studentLesson);
+
+        studentLessonRepository.deleteById((Long) Models.getField(studentLesson,"id"));
 
     }
 
@@ -106,9 +117,11 @@ public class StudentLessonService {
      */
     public StudentLesson setGrade(StudentLessonDto studentLessonDto) throws Exception {
 
-               StudentLesson studentLesson = searchByLessonAndStudentAndTerm(studentLessonDto.getLessonId(),studentLessonDto.getStudentId(),studentLessonDto.getTerm());
+               StudentLesson studentLesson = searchByLessonAndStudentAndTerm((Long) Models.getField(studentLessonDto,"lessonId")
+                       ,(Long) Models.getField(studentLessonDto,"studentId"),
+                       (int) Models.getField(studentLessonDto,"term"));
                if (studentLesson!=null){
-                   studentLesson.setGrade(studentLessonDto.getGrade());
+                   Models.setField(studentLesson,"grade",(float) Models.getField(studentLessonDto,"grade"));
                    studentLessonRepository.save(studentLesson);
                    return studentLesson;
                }
@@ -185,10 +198,17 @@ public class StudentLessonService {
         final float[] avg = {0};
         final int[] unit = {0};
 
-        searchByLessonId(lessonService.getLesson(lessonId).getId()).forEach(
+
+        searchByLessonId((Long) Models.getField(lessonService.getLesson(lessonId),"id")).forEach(
                 (temp)->{
-                    avg[0] +=temp.getGrade() * temp.getLesson().getUnit();
-                    unit[0] +=temp.getLesson().getUnit();
+
+                    try {
+                        avg[0] +=(float)Models.getField(temp,"grade") * (int)Models.getField(Models.getField(temp,"lesson"),"unit");
+                        unit[0] +=(int)Models.getField(Models.getField(temp,"lesson"),"unit");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
                 }
         );
         if (unit[0] != 0)
@@ -208,10 +228,10 @@ public class StudentLessonService {
         final int[] unit = {0};
         final String[] errors = {""};
 
-        professorService.getProfessor(professorId).getLessons().forEach((temp) -> {
+        ((Set<Lesson>)Models.getField(professorService.getProfessor(professorId),"lessons")).forEach((temp) -> {
             try {
-                int tempUnit = lessonService.getLesson(temp.getId()).getUnit();
-                avg[0] += getAvgOfLesson(temp.getId()) * tempUnit;
+                int tempUnit = (int) Models.getField(lessonService.getLesson((Long) Models.getField(temp,"id")),"unit");
+                avg[0] += getAvgOfLesson((Long) Models.getField(temp,"id")) * tempUnit;
                 unit[0] += tempUnit;
             } catch (Exception e) {
                 errors[0] += e.getMessage() + "\n";

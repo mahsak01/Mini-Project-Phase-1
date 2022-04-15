@@ -40,66 +40,44 @@ public class College {
     @JsonIgnore
     private Set<Lesson> lessons= new HashSet<>();
 
+    public College(String collegeName) {
+        this.collegeName = collegeName;
+    }
 
     public College() {
     }
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public String getCollegeName() {
-        return collegeName;
-    }
-
-    public void setCollegeName(String collegeName) {
-        this.collegeName = collegeName;
-    }
-
-    public Set<Professor> getProfessors() {
-        return professors;
-    }
-
-    public void addProfessor(Professor professor) {
-        professor.setCollege(this);
+    public void addProfessor(Professor professor) throws Exception {
+        Models.setField(professor,"college" , this);
         professors.add(professor);
     }
 
-    public void deleteProfessor(Professor professor) {
-        professor.setCollege(null);
+    public void deleteProfessor(Professor professor) throws Exception {
+        Models.setField(professor,"college" , null);
         professors.remove(professor);
     }
 
-    public Set<Student> getStudents() {
-        return students;
-    }
+    public void addStudent(Student student) throws Exception {
 
-    public void addStudent(Student student) {
-
-        student.setCollege(this);
+        Models.setField(student,"college" , this);
         students.add(student);
 
     }
-    public void deleteStudent(Student student) {
+    public void deleteStudent(Student student) throws Exception {
         students.remove(student);
-        student.setCollege(null);
+        Models.setField(student,"college" , null);
     }
 
-    public Set<Lesson> getLessons() {
-        return lessons;
-    }
 
-    public void addLesson(Lesson lesson) {
-        lesson.setCollege(this);
+    public void addLesson(Lesson lesson) throws Exception {
+        Models.setField(lesson,"college" , this);
         lessons.add(lesson);
     }
 
-    public void deleteLesson(Lesson lesson) {
-        lesson.setCollege(this);
+    public void deleteLesson(Lesson lesson) throws Exception {
+        Models.setField(lesson,"college" , null);
         lessons.add(lesson);
     }
 

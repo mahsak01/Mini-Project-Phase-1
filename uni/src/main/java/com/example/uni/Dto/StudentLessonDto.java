@@ -27,44 +27,4 @@ public class StudentLessonDto {
     @Max(value = 20 ,message = "grade between 0 - 20 ")
     private float grade=0;
 
-
-    public int getTerm() {
-        return term;
-    }
-
-    public void setTerm(int term) {
-        this.term = term;
-    }
-
-    public Long getLessonId() {
-        return lessonId;
-    }
-
-    public void setLessonId(Long lessonId) {
-        this.lessonId = lessonId;
-    }
-
-    public Long getStudentId() {
-        return studentId;
-    }
-
-    public void setStudentId(Long studentId) {
-        this.studentId = studentId;
-    }
-
-    public Long getProfessorId() {
-        return professorId;
-    }
-
-    public void setProfessorId(Long professorId) {
-        this.professorId = professorId;
-    }
-
-    public float getGrade() {
-        return grade;
-    }
-
-    public void setGrade(float grade) {
-        this.grade = grade;
-    }
 }
