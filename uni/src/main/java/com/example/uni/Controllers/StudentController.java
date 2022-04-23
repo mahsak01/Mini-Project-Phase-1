@@ -3,7 +3,7 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.PersonDto;
-import com.example.uni.Services.StudentService;
+import com.example.uni.Services.Crud.CrudStudentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +16,7 @@ import javax.validation.Valid;
 public class StudentController {
 
     @Autowired
-    private StudentService studentService;
+    private CrudStudentService crudStudentService;
 
     /**
      * function for add new student
@@ -28,7 +28,7 @@ public class StudentController {
     public ResponseEntity<Object> addStudent(@Valid @RequestBody PersonDto studentDto) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentService.addStudent(studentDto));
+        responseModels.setData(crudStudentService.addStudent(studentDto));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("student successfully create");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -47,7 +47,7 @@ public class StudentController {
                                                 @Valid @RequestBody PersonDto studentDto) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentService.updateStudent(studentDto, studentId));
+        responseModels.setData(crudStudentService.updateStudent(studentDto, studentId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("student successfully update");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -62,7 +62,7 @@ public class StudentController {
     @DeleteMapping("/{studentId}")
     public ResponseEntity<Object> deleteStudent(@PathVariable("studentId") Long studentId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        studentService.deleteStudent(studentId);
+        crudStudentService.deleteStudent(studentId);
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("student successfully delete");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -78,7 +78,7 @@ public class StudentController {
         ResponseModels responseModels = new ResponseModels();
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get All student successfully ");
-        responseModels.setData(studentService.getAllStudent());
+        responseModels.setData(crudStudentService.getAllStudent());
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
@@ -93,7 +93,7 @@ public class StudentController {
     public ResponseEntity<Object> getStudent(@PathVariable("studentId") Long studentId) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentService.getStudent(studentId));
+        responseModels.setData(crudStudentService.getStudent(studentId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get student successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -110,7 +110,7 @@ public class StudentController {
     public ResponseEntity<Object> getStudentLesson(@PathVariable("id") Long id) throws Exception {
         ResponseModels responseModels = new ResponseModels();
 
-        responseModels.setData(studentService.getAllStudentLesson(id));
+        responseModels.setData(crudStudentService.getAllStudentLesson(id));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get student lessons successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -126,7 +126,7 @@ public class StudentController {
     @GetMapping("/{id}/avg")
     public ResponseEntity<Object> getAvg(@PathVariable("id") Long id) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentService.getAvg(id));
+        responseModels.setData(crudStudentService.getAvg(id));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get avg student successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

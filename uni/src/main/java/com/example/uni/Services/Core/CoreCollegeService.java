@@ -1,6 +1,9 @@
-package com.example.uni.Services;
+package com.example.uni.Services.Core;
 
-import com.example.uni.Models.*;
+import com.example.uni.Models.College;
+import com.example.uni.Models.Lesson;
+import com.example.uni.Models.Professor;
+import com.example.uni.Models.Student;
 import com.example.uni.Repositories.CollegeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,7 +13,7 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class CollegeService {
+public class CoreCollegeService {
 
     @Autowired
     private CollegeRepository collegeRepository;
@@ -21,7 +24,8 @@ public class CollegeService {
      * @param college input data
      */
     public void addCollege(College college) throws Exception {
-        if (searchByCollegeName((String) Models.getField(college,"collegeName")) != null)
+
+        if (searchByCollegeName(college.getCollegeName()) != null)
             throw new Exception("The college With This name Exist");
         collegeRepository.save(college);
     }
@@ -34,7 +38,7 @@ public class CollegeService {
     public void updateCollege(College college, Long id) throws Exception {
         if (getCollege(id)==null)
             throw new Exception("The college With This id not Exist");
-        Models.setField(college,"id",id);
+        college.setId(id);
         addCollege(college);
     }
 
@@ -88,7 +92,7 @@ public class CollegeService {
      * @return all lesson
      */
     public Set<Lesson> getAllLessonOfCollege(Long id) throws Exception {
-        return (Set<Lesson>) Models.getField(getCollege(id),"lessons");
+        return getCollege(id).getLessons();
     }
 
     /**
@@ -97,7 +101,7 @@ public class CollegeService {
      * @return all Professor
      */
     public Set<Professor> getAllProfessorOfCollege(Long id) throws Exception {
-        return (Set<Professor>) Models.getField(getCollege(id),"professors");
+        return getCollege(id).getProfessors();
 
     }
 
@@ -107,7 +111,7 @@ public class CollegeService {
      * @return all student
      */
     public Set<Student> getAllStudentOfCollege(Long id) throws Exception {
-        return (Set<Student>) Models.getField(getCollege(id),"students");
+        return getCollege(id).getStudents();
 
     }
 }

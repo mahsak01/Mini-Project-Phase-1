@@ -1,7 +1,10 @@
-package com.example.uni.Services;
+package com.example.uni.Services.Core;
 
 import com.example.uni.Dto.PersonDto;
-import com.example.uni.Models.*;
+import com.example.uni.Models.Lesson;
+import com.example.uni.Models.Professor;
+import com.example.uni.Models.Student;
+import com.example.uni.Models.StudentLesson;
 import com.example.uni.Repositories.ProfessorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,37 +15,33 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class ProfessorService {
+public class CoreProfessorService {
 
     @Autowired
     private ProfessorRepository professorRepository;
 
     @Autowired
-    private CollegeService collegeService;
+    private CoreCollegeService coreCollegeService;
 
     @Autowired
-    private LessonService lessonService;
+    private CoreLessonService coreLessonService;
 
 
     /**
      * function for add new professor
      *
-     * @param professorDto input data
+     * @param professor input data
      * @return professor
      */
-    public Professor addProfessor(PersonDto professorDto) throws Exception {
+    public Professor addProfessor(Professor professor,Long collgeId) throws Exception {
 
-        if (searchByNationalCode((String) Models.getField(professorDto,"nationalCode")) != null)
+        if (searchByNationalCode(professor.getNationalCode()) != null)
             throw new Exception("The professor With This national code Exist");
-        else if (searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")) != null)
+        else if (searchByPersonnelNumber(professor.getPersonnelNumber()) != null)
             throw new Exception("The professor With This Personnel Number  Exist");
 
-        Professor professor= new Professor((String) Models.getField(professorDto,"personnelNumber"),
-                (String) Models.getField(professorDto,"firstname"),
-                (String) Models.getField(professorDto,"lastname"),
-                (String) Models.getField(professorDto,"nationalCode"));
 
-        collegeService.getCollege((Long) Models.getField(professorDto,"collegeId")).addProfessor(professor);
+        coreCollegeService.getCollege(collgeId).addProfessor(professor);
         professorRepository.save(professor);
 
         return professor;
@@ -51,31 +50,27 @@ public class ProfessorService {
     /**
      * function for update professor
      *
-     * @param professorDto   input data
+     * @param professor   input data
      * @param professorId of professor
      * @return professor
      */
-    public Professor updateProfsser(PersonDto professorDto, Long professorId) throws Exception {
+    public Professor updateProfsser(Professor professor,Long collegeId, Long professorId) throws Exception {
 
         //todo
-        Professor professor = getProfessor(professorId);
+        Professor newProfessor = getProfessor(professorId);
 
-        if (searchByNationalCode((String) Models.getField(professorDto,"nationalCode")) != null)
-            if (!Models.getField(searchByNationalCode((String) Models.getField(professorDto,"nationalCode")),"id").equals(professorId))
+        if (searchByNationalCode(professor.getNationalCode()) != null)
+            if (!searchByNationalCode(professor.getNationalCode()).getId().equals(professorId))
                 throw new Exception("The professor With This national code Exist");
-        if (searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")) != null)
-            if (!Models.getField(searchByPersonnelNumber((String) Models.getField(professorDto,"personnelNumber")),"id").equals(professorId))
+        if (searchByPersonnelNumber(professor.getPersonnelNumber()) != null)
+            if (!searchByPersonnelNumber(professor.getPersonnelNumber()).getId().equals(professorId))
                 throw new Exception("The professor With This Personnel Number  Exist");
 
-        ((College)Models.getField(professor,"college")).deleteProfessor(professor);
+        newProfessor.getCollege().deleteProfessor(newProfessor);
 
-        professor = new Professor((String) Models.getField(professorDto,"personnelNumber"),
-                (String) Models.getField(professorDto,"firstname"),
-                (String) Models.getField(professorDto,"lastname"),
-                (String) Models.getField(professorDto,"nationalCode"));
-        Models.setField(professor,"id",professorId);
+        professor.setId(professorId);
 
-        collegeService.getCollege((Long) Models.getField(professorDto,"collegeId")).addProfessor(professor);
+        coreCollegeService.getCollege(collegeId).addProfessor(professor);
         professorRepository.save(professor);
 
         return professor;
@@ -91,7 +86,7 @@ public class ProfessorService {
 
         Professor professor = getProfessor(professorId);
 
-        ((College) Models.getField(professor,"college")).deleteProfessor(professor);
+        professor.getCollege().deleteProfessor(professor);
 
         professorRepository.deleteById(professorId);
 
@@ -147,7 +142,7 @@ public class ProfessorService {
      */
     public Set<Lesson> getAllLesson(Long professorId) throws Exception {
 
-        return (Set<Lesson>) Models.getField(getProfessor(professorId),"lessons");
+        return getProfessor(professorId).getLessons();
     }
 
     /**
@@ -158,9 +153,9 @@ public class ProfessorService {
      */
     public List<Student> getAllStudent(Long professorId) throws Exception {
         List<Student> students = new ArrayList<>();
-        for (Lesson lesson: (Set<Lesson>) Models.getField(getProfessor(professorId),"lessons")){
-            for (StudentLesson studentLesson : (Set<StudentLesson>) Models.getField(lesson,"studentLessons"))
-                students.add((Student) Models.getField(studentLesson,"student"));
+        for (Lesson lesson: getProfessor(professorId).getLessons()){
+            for (StudentLesson studentLesson : lesson.getStudentLessons())
+                students.add(studentLesson.getStudent());
 
 
         }
@@ -177,7 +172,7 @@ public class ProfessorService {
 
     public Professor addLesson(Long professorId, Long lessonId) throws Exception {
         Professor professor = getProfessor(professorId);
-        Lesson lesson = lessonService.getLesson(lessonId);
+        Lesson lesson = coreLessonService.getLesson(lessonId);
         professor.addLesson(lesson);
         lesson.addProfessor(professor);
         professorRepository.save(professor);
@@ -194,7 +189,7 @@ public class ProfessorService {
      */
     public Professor deleteLesson(Long professorId, Long lessonId) throws Exception {
         Professor professor = getProfessor(professorId);
-        Lesson lesson = lessonService.getLesson(lessonId);
+        Lesson lesson = coreLessonService.getLesson(lessonId);
         professor.deleteLesson(lesson);
         lesson.deleteProfessor(professor);
         professorRepository.save(professor);

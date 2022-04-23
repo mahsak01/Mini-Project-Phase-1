@@ -4,7 +4,7 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.LessonDto;
-import com.example.uni.Services.LessonService;
+import com.example.uni.Services.Crud.CrudLessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 public class LessonController {
 
     @Autowired
-    private LessonService lessonService;
+    private CrudLessonService crudLessonService;
 
     /**
      * function for add new lesson
@@ -30,7 +30,7 @@ public class LessonController {
 
         ResponseModels responseModels = new ResponseModels();
 
-        responseModels.setData(lessonService.addLesson(lessonDto));
+        responseModels.setData(crudLessonService.addLesson(lessonDto));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("lesson successfully create");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -48,7 +48,7 @@ public class LessonController {
                                                @Valid @RequestBody LessonDto lessonDto) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(lessonService.updateLesson(lessonDto, lessonId));
+        responseModels.setData(crudLessonService.updateLesson(lessonDto, lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("lesson successfully update");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -64,7 +64,7 @@ public class LessonController {
     @DeleteMapping("/{lessonId}")
     public ResponseEntity<Object> deleteLesson(@PathVariable("lessonId") Long lessonId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        lessonService.deleteLesson(lessonId);
+        crudLessonService.deleteLesson(lessonId);
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("delete lesson successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -80,7 +80,7 @@ public class LessonController {
         ResponseModels responseModels = new ResponseModels();
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get All lesson successfully ");
-        responseModels.setData(lessonService.getAllLesson());
+        responseModels.setData(crudLessonService.getAllLesson());
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
@@ -95,7 +95,7 @@ public class LessonController {
     public ResponseEntity<Object> getLesson(@PathVariable("lessonId") Long lessonId) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(lessonService.getLesson(lessonId));
+        responseModels.setData(crudLessonService.getLesson(lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get lesson successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -111,7 +111,7 @@ public class LessonController {
     @GetMapping("/{lessonId}/professors")
     public ResponseEntity<Object> getProfessors(@PathVariable("lessonId") Long lessonId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(lessonService.getAllProfessor(lessonId));
+        responseModels.setData(crudLessonService.getAllProfessor(lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get lesson professors successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -126,7 +126,7 @@ public class LessonController {
     @GetMapping("/{lessonId}/students")
     public ResponseEntity<Object> getStudents(@PathVariable("lessonId") Long lessonId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(lessonService.getAllStudent(lessonId));
+        responseModels.setData(crudLessonService.getAllStudent(lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get lesson professors successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

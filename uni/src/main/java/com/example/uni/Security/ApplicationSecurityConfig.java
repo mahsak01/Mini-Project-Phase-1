@@ -1,64 +1,59 @@
 package com.example.uni.Security;
 
+import com.example.uni.Dto.Roles;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    private final PasswordEncoder passwordEncoder;
+
+    private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
 
     @Autowired
-    public ApplicationSecurityConfig(PasswordEncoder passwordEncoder) {
-        this.passwordEncoder = passwordEncoder;
+    public ApplicationSecurityConfig(UserAuthenticationEntryPoint userAuthenticationEntryPoint) {
+        this.userAuthenticationEntryPoint = userAuthenticationEntryPoint;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
                 .and()
-                .httpBasic();
-                
+                .addFilterBefore(new UsernamePasswordAuthFilter() , BasicAuthenticationFilter.class)
+                .addFilterBefore(new CookieAuthFilter(),UsernamePasswordAuthFilter.class)
+                .csrf().disable()
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .logout().deleteCookies(CookieAuthFilter.COOKIE_NAME)
+                .and()
+                .authorizeRequests()
+                .antMatchers("/api/v1/colleges","/api/v1/lessons").hasAnyRole(Roles.MANAGER.name())
+                .antMatchers("/api/v1/**").hasAnyRole(Roles.ADMIN.name())
+                .anyRequest()
+                .authenticated();
+
+
     }
 
-    @Override
-    @Bean
-    protected UserDetailsService userDetailsService() {
-        UserDetails userAdmin = User.builder()
-                .username("admin")
-                .password(passwordEncoder.encode("admin"))
-                .roles("ADMIN")
-                .build();
-
-        UserDetails userStudent = User.builder()
-                .username("student")
-                .password(passwordEncoder.encode("student"))
-                .roles("STUDENT")
-                .build();
-
-        UserDetails userTeacher = User.builder()
-                .username("teacher")
-                .password(passwordEncoder.encode("teacher"))
-                .roles("TEACHER")
-                .build();
-
-        return new InMemoryUserDetailsManager(
-          userAdmin,userStudent,userTeacher
-        );
-    }
+//    @Override
+//    @Bean
+//    protected UserDetailsService userDetailsService() {
+//        UserDetails userAdmin = User.builder()
+//                .username("admin")
+//                .roles(Roles.ADMIN.name());
+//
+//
+//
+//        return new InMemoryUserDetailsManager(
+//          userAdmin
+//        );
+//    }
 }

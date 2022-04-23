@@ -1,7 +1,6 @@
 package com.example.uni.Services;
 
 import com.example.uni.Models.College;
-import com.example.uni.Models.Models;
 import com.example.uni.Repositories.CollegeRepository;
 import com.example.uni.Repositories.LessonRepository;
 import com.example.uni.Repositories.ProfessorRepository;
@@ -17,7 +16,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
@@ -66,7 +64,8 @@ public class CollegeServiceTest {
     public void addCollegeExist()  {
         College college = new College("math");
 
-        collegeRepository.save(college);
+        given(collegeRepository.findById(anyLong())).willReturn(java.util.Optional.of(college));
+
 
         Exception exception = assertThrows(Exception.class, () -> collegeService.addCollege(college));
 
@@ -92,6 +91,7 @@ public class CollegeServiceTest {
         assertEquals("The college With This id not Exist", exception.getMessage());
 
     }
+
 
 
 }

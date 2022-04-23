@@ -1,7 +1,10 @@
-package com.example.uni.Services;
+package com.example.uni.Services.Core;
 
 import com.example.uni.Dto.LessonDto;
-import com.example.uni.Models.*;
+import com.example.uni.Models.Lesson;
+import com.example.uni.Models.Professor;
+import com.example.uni.Models.Student;
+import com.example.uni.Models.StudentLesson;
 import com.example.uni.Repositories.LessonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,16 +13,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
-public class LessonService {
+public class CoreLessonService {
 
     @Autowired
     private LessonRepository lessonRepository;
 
     @Autowired
-    private CollegeService collegeService;
+    private CoreCollegeService coreCollegeService;
 
 
 
@@ -27,18 +29,15 @@ public class LessonService {
     /**
      * function for add new lesson
      *
-     * @param lessonDto input data
+     * @param lesson input data
      * @return lesson
      */
-    public Lesson addLesson(LessonDto lessonDto) throws Exception {
+    public Lesson addLesson(Lesson lesson,Long collegeId) throws Exception {
 
-        if (searchByLessonNameAndCollegeId((String) Models.getField(lessonDto,"lessonName")
-                , (Long) Models.getField(lessonDto,"collegeId")) != null)
+
+        if (searchByLessonNameAndCollegeId(lesson.getLessonName(),collegeId) != null)
             throw new Exception("The lesson With This name in this college Exist");
-        Lesson lesson = new Lesson((String) Models.getField(lessonDto,"lessonName"),
-                (int) Models.getField(lessonDto,"unit"));
-        collegeService.getCollege((Long) Models.getField(lessonDto,"collegeId"))
-                .addLesson(lesson);
+        coreCollegeService.getCollege(collegeId).addLesson(lesson);
         lessonRepository.save(lesson);
 
         return lesson;
@@ -47,20 +46,21 @@ public class LessonService {
     /**
      * function for update lesson
      *
-     * @param lessonDto input data
+     * @param lesson input data
      * @param lessonId  of lesson
      * @return lesson
      */
-    public Lesson updateLesson(LessonDto lessonDto, Long lessonId) throws Exception {
-        Lesson lesson = getLesson(lessonId);
-        if (searchByLessonNameAndCollegeId((String) Models.getField(lessonDto,"lessonName"), (Long) Models.getField(lessonDto,"collegeId")) != null)
-            throw new Exception("The lesson With This name in this college Exist");
-        collegeService.getCollege((Long) Models.getField(lessonDto,"collegeId")).deleteLesson(lesson);
-        Models.setField(lesson,"lessonName",(String) Models.getField(lessonDto,"lessonName"));
-        Models.setField(lesson,"unit", (int) Models.getField(lessonDto,"unit"));
-        Models.setField(lesson,"id",lessonId);
+    public Lesson updateLesson(Lesson lesson,Long collegeId, Long lessonId) throws Exception {
 
-        collegeService.getCollege((Long) Models.getField(lessonDto,"collegeId")).addLesson(lesson);
+
+        if (searchByLessonNameAndCollegeId(lesson.getLessonName(),collegeId) != null)
+            throw new Exception("The lesson With This name in this college Exist");
+        coreCollegeService.getCollege(collegeId).deleteLesson(lesson);
+
+
+        lesson.setId(lessonId);
+
+        coreCollegeService.getCollege(collegeId).addLesson(lesson);
         lessonRepository.save(lesson);
 
         return lesson;
@@ -78,9 +78,7 @@ public class LessonService {
 
         lessonRepository.delete(lesson);
 
-
-
-        ((College)Models.getField(lesson,"college")).deleteLesson(lesson);
+        lesson.getCollege().deleteLesson(lesson);
 
 
     }
@@ -129,7 +127,7 @@ public class LessonService {
      * @return all professor of lesson
      */
     public Set<Professor> getAllProfessor(Long lessonId) throws Exception {
-        return (Set<Professor>) Models.getField(getLesson(lessonId),"professors");
+        return getLesson(lessonId).getProfessors();
     }
 
     /**
@@ -142,8 +140,8 @@ public class LessonService {
         List<Student> students = new ArrayList<>();
 
         for (StudentLesson studentLesson:
-                (Set<StudentLesson>)Models.getField(getLesson(lessonId),"studentLessons"))
-          students.add((Student) Models.getField(studentLesson,"student"));
+                getLesson(lessonId).getStudentLessons())
+          students.add(studentLesson.getStudent());
 
         return students;
 

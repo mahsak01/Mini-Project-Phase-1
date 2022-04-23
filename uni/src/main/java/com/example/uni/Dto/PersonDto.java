@@ -33,4 +33,44 @@ public class PersonDto {
         this.nationalCode = nationalCode;
         this.collegeId = collegeId;
     }
+
+    public String getPersonnelNumber() {
+        return personnelNumber;
+    }
+
+    public void setPersonnelNumber(String personnelNumber) {
+        this.personnelNumber = personnelNumber;
+    }
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
+
+    public String getNationalCode() {
+        return nationalCode;
+    }
+
+    public void setNationalCode(String nationalCode) {
+        this.nationalCode = nationalCode;
+    }
+
+    public Long getCollegeId() {
+        return collegeId;
+    }
+
+    public void setCollegeId(Long collegeId) {
+        this.collegeId = collegeId;
+    }
 }

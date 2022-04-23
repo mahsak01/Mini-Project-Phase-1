@@ -3,7 +3,7 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.PersonDto;
-import com.example.uni.Services.ProfessorService;
+import com.example.uni.Services.Crud.CrudProfessorService;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +18,7 @@ import javax.validation.Valid;
 public class ProfessorController {
 
     @Autowired
-    private ProfessorService professorService;
+    private CrudProfessorService crudProfessorService;
 
     /**
      * function for add new professor
@@ -30,7 +30,7 @@ public class ProfessorController {
     public ResponseEntity<Object> addProfessor(@Valid @RequestBody PersonDto professorDto) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(professorService.addProfessor(professorDto));
+        responseModels.setData(crudProfessorService.addProfessor(professorDto));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("professor successfully create");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -48,7 +48,7 @@ public class ProfessorController {
                                                   @Valid @RequestBody PersonDto professorDto) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(professorService.updateProfsser(professorDto, professorId));
+        responseModels.setData(crudProfessorService.updateProfsser(professorDto, professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("professor successfully update");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -64,7 +64,7 @@ public class ProfessorController {
     @DeleteMapping("/{professorId}")
     public ResponseEntity<Object> deleteProfessor(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        professorService.deleteProfsser(professorId);
+        crudProfessorService.deleteProfsser(professorId);
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("professor successfully delete");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -80,7 +80,7 @@ public class ProfessorController {
         ResponseModels responseModels = new ResponseModels();
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get All professor successfully ");
-        responseModels.setData(professorService.getAllProfessor());
+        responseModels.setData(crudProfessorService.getAllProfessor());
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
     }
 
@@ -95,7 +95,7 @@ public class ProfessorController {
     public ResponseEntity<Object> getProfessor(@PathVariable("professorId") Long professorId) throws Exception {
 
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(professorService.getProfessor(professorId));
+        responseModels.setData(crudProfessorService.getProfessor(professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get professor successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -111,7 +111,7 @@ public class ProfessorController {
     @GetMapping("/{professorId}/lessons")
     public ResponseEntity<Object> getLessons(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(professorService.getAllLesson(professorId));
+        responseModels.setData(crudProfessorService.getAllLesson(professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get professor lessons successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -126,7 +126,7 @@ public class ProfessorController {
     @GetMapping("/{professorId}/students")
     public ResponseEntity<Object> getStudents(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(professorService.getAllStudent(professorId));
+        responseModels.setData(crudProfessorService.getAllStudent(professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get professor students successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -146,7 +146,7 @@ public class ProfessorController {
         ResponseModels responseModels = new ResponseModels();
         JsonObject data = new Gson().fromJson(json, JsonObject.class);
         Long lessonId = data.get("lessonId").getAsLong();
-        responseModels.setData(professorService.addLesson(professorId, lessonId));
+        responseModels.setData(crudProfessorService.addLesson(professorId, lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("add lesson of professor successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -164,7 +164,7 @@ public class ProfessorController {
         ResponseModels responseModels = new ResponseModels();
         JsonObject data = new Gson().fromJson(json, JsonObject.class);
         Long lessonId = data.get("lessonId").getAsLong();
-        responseModels.setData(professorService.deleteLesson(professorId, lessonId));
+        responseModels.setData(crudProfessorService.deleteLesson(professorId, lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("delete lesson of professor successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

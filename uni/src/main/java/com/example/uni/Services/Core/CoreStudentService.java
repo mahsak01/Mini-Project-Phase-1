@@ -1,6 +1,8 @@
-package com.example.uni.Services;
+package com.example.uni.Services.Core;
+
 import com.example.uni.Dto.PersonDto;
-import com.example.uni.Models.*;
+import com.example.uni.Models.Student;
+import com.example.uni.Models.StudentLesson;
 import com.example.uni.Repositories.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,38 +12,29 @@ import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class StudentService {
+public class CoreStudentService {
 
     @Autowired
     private StudentRepository studentRepository;
 
     @Autowired
-    private CollegeService collegeService;
+    private CoreCollegeService coreCollegeService;
 
 
     /**
      * function for add new student
-     * @param studentDto input data
+     * @param student input data
      * @return student
      */
-    public Student addStudent(PersonDto studentDto)throws Exception{
+    public Student addStudent(Student student,Long collegeId)throws Exception{
 
 
-        if (searchByNationalCode((String) Models.getField(studentDto,"nationalCode"))!=null )
+        if (searchByNationalCode(student.getNationalCode())!=null )
             throw new Exception("The student With This national code Exist");
-        else if (searchByPersonnelNumber((String) Models.getField(studentDto,"personnelNumber"))!=null)
+        else if (searchByPersonnelNumber(student.getPersonnelNumber())!=null)
             throw new Exception("The student With This Personnel Number  Exist");
 
-
-
-        Student student= new Student((String) Models.getField(studentDto,"personnelNumber"),
-                (String) Models.getField(studentDto,"firstname"),
-                (String) Models.getField(studentDto,"lastname"),
-                (String) Models.getField(studentDto,"nationalCode"));
-
-
-
-        collegeService.getCollege((Long) Models.getField(studentDto,"collegeId")).addStudent(student);
+        coreCollegeService.getCollege(collegeId).addStudent(student);
         studentRepository.save(student);
 
         return student;
@@ -49,32 +42,28 @@ public class StudentService {
 
     /**
      * function for update student
-     * @param studentDto input data
+     * @param student input data
      * @param studentId      of student
      * @return student
      */
-    public Student updateStudent(PersonDto studentDto , Long studentId )throws Exception {
+    public Student updateStudent(Student student , Long studentId ,Long collegeId)throws Exception {
 
         //todo
-        Student student = getStudent(studentId);
+        Student newstudent = getStudent(studentId);
 
-        if (searchByNationalCode((String) Models.getField(studentDto,"nationalCode"))!=null)
-            if (!Models.getField(searchByNationalCode((String) Models.getField(studentDto,"nationalCode")),"id").equals(studentId))
+        if (searchByNationalCode(student.getNationalCode())!=null)
+            if (!searchByNationalCode(student.getNationalCode()).getId().equals(studentId))
                  throw new Exception("The student With This national code Exist");
-        if (searchByPersonnelNumber((String) Models.getField(studentDto,"personnelNumber"))!=null)
-            if (!Models.getField(searchByPersonnelNumber((String) Models.getField(studentDto,"nationalCode")),"id").equals(studentId))
+        if (searchByPersonnelNumber(student.getPersonnelNumber())!=null)
+            if (!searchByPersonnelNumber(student.getPersonnelNumber()).getId().equals(studentId))
                 throw new Exception("The student With This Personnel Number  Exist");
 
-        ((College)Models.getField(student,"college")).deleteStudent(student);
+        newstudent.getCollege().deleteStudent(newstudent);
 
-        student = new Student((String) Models.getField(studentDto,"personnelNumber"),
-                (String) Models.getField(studentDto,"firstname"),
-                (String) Models.getField(studentDto,"lastname"),
-                (String) Models.getField(studentDto,"nationalCode"));
 
-        Models.setField(student,"id",studentId);
+        student.setId(studentId);
 
-        collegeService.getCollege((Long) Models.getField(studentDto,"collegeId")).addStudent(student);
+        coreCollegeService.getCollege(collegeId).addStudent(student);
         studentRepository.save(student);
 
         return student;
@@ -90,7 +79,7 @@ public class StudentService {
 
         Student student= getStudent(id);
 
-        ((College) Models.getField(student,"college")).deleteStudent(student);
+        student.getCollege().deleteStudent(student);
 
         studentRepository.deleteById(id);
 
@@ -146,7 +135,7 @@ public class StudentService {
      */
     public Set<StudentLesson> getAllStudentLesson(Long id)throws Exception{
 
-        return (Set<StudentLesson>) Models.getField(getStudent(id),"studentLessons");
+        return getStudent(id).getStudentLessons();
     }
 
     /**
@@ -160,13 +149,9 @@ public class StudentService {
 
         getAllStudentLesson(id).forEach((temp)->{
 
+                avg[0] = temp.getGrade() * temp.getLesson().getUnit();
+                unit[0] = temp.getLesson().getUnit();
 
-            try {
-                avg[0] = (float) Models.getField(temp,"grade") * (int)Models.getField(Models.getField(temp,"lesson"),"unit");
-                unit[0] = (int) Models.getField(Models.getField(temp,"lesson"),"unit");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
         });
 
         if (unit[0]!=0)

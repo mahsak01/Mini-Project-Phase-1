@@ -59,7 +59,53 @@ public class Lesson {
     }
 
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getLessonName() {
+        return lessonName;
+    }
+
+    public void setLessonName(String lessonName) {
+        this.lessonName = lessonName;
+    }
+
+    public int getUnit() {
+        return unit;
+    }
+
+    public void setUnit(int unit) {
+        this.unit = unit;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
+
+    public Set<Professor> getProfessors() {
+        return professors;
+    }
+
+    public void setProfessors(Set<Professor> professors) {
+        this.professors = professors;
+    }
+
+    public Set<StudentLesson> getStudentLessons() {
+        return studentLessons;
+    }
+
+    public void setStudentLessons(Set<StudentLesson> studentLessons) {
+        this.studentLessons = studentLessons;
+    }
 
     public void addStudentLesson(StudentLesson studentLesson) {
         studentLessons.add(studentLesson);

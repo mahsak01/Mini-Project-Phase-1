@@ -3,7 +3,7 @@ package com.example.uni.Controllers;
 import com.example.uni.Controllers.Models.ResponseModels;
 import com.example.uni.Controllers.Models.Status;
 import com.example.uni.Dto.StudentLessonDto;
-import com.example.uni.Services.StudentLessonService;
+import com.example.uni.Services.Crud.CrudStudentLessonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import javax.validation.Valid;
 public class StudentLessonController {
 
     @Autowired
-    private StudentLessonService studentLessonService;
+    private CrudStudentLessonService crudStudentLessonService;
 
 
     /**
@@ -29,7 +29,7 @@ public class StudentLessonController {
     @PostMapping("students/lesson")
     public ResponseEntity<Object> addLesson(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentLessonService.addStudentLesson(studentLessonDto));
+        responseModels.setData(crudStudentLessonService.addStudentLesson(studentLessonDto));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("add lesson of student successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -44,7 +44,7 @@ public class StudentLessonController {
     @DeleteMapping("students/lesson")
     public ResponseEntity<Object> deleteLesson(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        studentLessonService.deleteStudentLesson(studentLessonDto);
+        crudStudentLessonService.deleteStudentLesson(studentLessonDto);
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("delete lesson of student successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -60,7 +60,7 @@ public class StudentLessonController {
     @GetMapping("professors/{professorId}/avg")
     public ResponseEntity<Object> getAvg(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
+        responseModels.setData(crudStudentLessonService.getAvgOfProfessor(professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("delete lesson of professor successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -76,7 +76,7 @@ public class StudentLessonController {
     @PostMapping("professors/addGrade")
     public ResponseEntity<Object> addGrade(@Valid @RequestBody StudentLessonDto studentLessonDto) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentLessonService.setGrade(studentLessonDto));
+        responseModels.setData(crudStudentLessonService.setGrade(studentLessonDto));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("change grade successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -92,7 +92,7 @@ public class StudentLessonController {
     @GetMapping("lessons/{lessonId}/avgOfLesson")
     public ResponseEntity<Object> getAvgOfLesson(@PathVariable("lessonId") Long lessonId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentLessonService.getAvgOfLesson(lessonId));
+        responseModels.setData(crudStudentLessonService.getAvgOfLesson(lessonId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get avg of lesson successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);
@@ -107,7 +107,7 @@ public class StudentLessonController {
     @GetMapping("professors/{professorId}/avgOfProfessor")
     public ResponseEntity<Object> getAvgOfProfessor(@PathVariable("professorId") Long professorId) throws Exception {
         ResponseModels responseModels = new ResponseModels();
-        responseModels.setData(studentLessonService.getAvgOfProfessor(professorId));
+        responseModels.setData(crudStudentLessonService.getAvgOfProfessor(professorId));
         responseModels.setStatus(Status.SUCCESS);
         responseModels.setMessage("get avg students of professor successfully");
         return ResponseEntity.status(HttpStatus.FOUND).body(responseModels);

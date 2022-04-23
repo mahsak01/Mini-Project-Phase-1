@@ -43,7 +43,29 @@ public class Student extends Person {
         this.nationalCode = nationalCode;
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Set<StudentLesson> getStudentLessons() {
+        return studentLessons;
+    }
+
+    public void setStudentLessons(Set<StudentLesson> studentLessons) {
+        this.studentLessons = studentLessons;
+    }
+
+    public College getCollege() {
+        return college;
+    }
+
+    public void setCollege(College college) {
+        this.college = college;
+    }
 
     public void addStudentLesson(StudentLesson studentLesson) {
         studentLessons.add(studentLesson);

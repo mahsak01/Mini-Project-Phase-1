@@ -47,38 +47,78 @@ public class College {
     public College() {
     }
 
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCollegeName() {
+        return collegeName;
+    }
+
+    public void setCollegeName(String collegeName) {
+        this.collegeName = collegeName;
+    }
+
+    public Set<Professor> getProfessors() {
+        return professors;
+    }
+
+    public void setProfessors(Set<Professor> professors) {
+        this.professors = professors;
+    }
+
+    public Set<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(Set<Student> students) {
+        this.students = students;
+    }
+
+    public Set<Lesson> getLessons() {
+        return lessons;
+    }
+
+    public void setLessons(Set<Lesson> lessons) {
+        this.lessons = lessons;
+    }
 
     public void addProfessor(Professor professor) throws Exception {
-        Models.setField(professor,"college" , this);
+        professor.setCollege(this);
         professors.add(professor);
     }
 
     public void deleteProfessor(Professor professor) throws Exception {
-        Models.setField(professor,"college" , null);
+
         professors.remove(professor);
+        professor.setCollege(null);
+
     }
 
     public void addStudent(Student student) throws Exception {
 
-        Models.setField(student,"college" , this);
+        student.setCollege(this);
         students.add(student);
 
     }
     public void deleteStudent(Student student) throws Exception {
         students.remove(student);
-        Models.setField(student,"college" , null);
+        student.setCollege(null);
     }
 
 
     public void addLesson(Lesson lesson) throws Exception {
-        Models.setField(lesson,"college" , this);
+        lesson.setCollege(this);
         lessons.add(lesson);
     }
 
     public void deleteLesson(Lesson lesson) throws Exception {
-        Models.setField(lesson,"college" , null);
         lessons.add(lesson);
+        lesson.setCollege(null);
     }
 
     @Override
