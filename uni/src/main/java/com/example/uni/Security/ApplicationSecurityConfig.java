@@ -1,59 +1,61 @@
 package com.example.uni.Security;
 
-import com.example.uni.Dto.Roles;
+import com.example.uni.Repositories.UserRepository;
+import com.example.uni.Services.Core.CoreUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
 public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
 
-
-
-    private final UserAuthenticationEntryPoint userAuthenticationEntryPoint;
+    @Autowired
+    private UserRepository userRepository;
 
     @Autowired
-    public ApplicationSecurityConfig(UserAuthenticationEntryPoint userAuthenticationEntryPoint) {
-        this.userAuthenticationEntryPoint = userAuthenticationEntryPoint;
+    private DaoAuthenticationProvider daoAuthenticationProvider;
+
+    @Bean
+    public DaoAuthenticationProvider setDaoAuthenticationProvider(){
+        daoAuthenticationProvider= new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userDetailsService());
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return new CoreUserService();
+    }
+    @Override
+    public void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.authenticationProvider(daoAuthenticationProvider);
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                .exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint)
-                .and()
-                .addFilterBefore(new UsernamePasswordAuthFilter() , BasicAuthenticationFilter.class)
-                .addFilterBefore(new CookieAuthFilter(),UsernamePasswordAuthFilter.class)
-                .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .logout().deleteCookies(CookieAuthFilter.COOKIE_NAME)
-                .and()
+
                 .authorizeRequests()
-                .antMatchers("/api/v1/colleges","/api/v1/lessons").hasAnyRole(Roles.MANAGER.name())
-                .antMatchers("/api/v1/**").hasAnyRole(Roles.ADMIN.name())
+                .antMatchers("/api/v1/colleges","/api/v1/lessons").hasAnyRole("manager")
+                .antMatchers("/api/v1/**").hasAnyRole("admin")
                 .anyRequest()
                 .authenticated();
 
 
     }
 
-//    @Override
-//    @Bean
-//    protected UserDetailsService userDetailsService() {
-//        UserDetails userAdmin = User.builder()
-//                .username("admin")
-//                .roles(Roles.ADMIN.name());
-//
-//
-//
-//        return new InMemoryUserDetailsManager(
-//          userAdmin
-//        );
-//    }
 }
