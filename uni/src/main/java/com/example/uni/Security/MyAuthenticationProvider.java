@@ -16,10 +16,6 @@ public class MyAuthenticationProvider extends AbstractUserDetailsAuthenticationP
     private volatile String userNotFoundEncodedPassword;
     private UserDetailsService userDetailsService;
 
-    MyAuthenticationProvider(PasswordEncoder passwordEncoder, UserDetailsService userDetailsService) {
-        this.passwordEncoder = passwordEncoder;
-        this.userDetailsService = userDetailsService;
-    }
 
     @Override
     protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
@@ -53,6 +49,14 @@ public class MyAuthenticationProvider extends AbstractUserDetailsAuthenticationP
 
     public void setUserDetailsService(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
+    }
+
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
+
+    public void setPasswordEncoder(PasswordEncoder passwordEncoder) {
+        this.passwordEncoder = passwordEncoder;
     }
 
     private void mitigateAgainstTimingAttack(UsernamePasswordAuthenticationToken authentication) {
